@@ -1,6 +1,6 @@
 # StravaPet
 
-Fullstack-приложение для мотивации через бег и Strava API.
+Tiny motivation app
 
 - 🟢 Mobile: React Native + Expo
 - 🔵 Backend: Node.js + Express
