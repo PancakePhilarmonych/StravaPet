@@ -23,4 +23,13 @@ router.post('/strava', async (req, res) => {
   }
 });
 
+router.get('/strava/redirect', (req, res) => {
+  const redirectUri = req.query.redirect_uri;
+  const clientId = process.env.STRAVA_CLIENT_ID;
+
+  const stravaAuthUrl = `https://www.strava.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=activity:read_all,read&approval_prompt=auto`;
+
+  res.json({ url: stravaAuthUrl });
+});
+
 export default router;
