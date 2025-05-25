@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.get('/activities', (req, res) => {
+router.get('/', (req, res) => {
   res.json({
     message: 'This is the activities endpoint',
   });
