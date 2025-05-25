@@ -1,8 +1,5 @@
 {
   "name": "stravapet",
   "private": true,
-  "workspaces": ["app/*"],
-  "scripts": {
-    "dev:backend": "ts-node-dev --project app/backend/tsconfig.json --respawn --transpile-only app/backend/src/index.ts"
-  }
+  "workspaces": ["app/*"]
 }
