@@ -2,7 +2,7 @@
 
 Tiny motivation app
 
-- 🟢 Mobile: React Native + Expo
+- 🟢 Frontend: Vue 3
 - 🔵 Backend: Node.js + Express
 - 🟣 DB/Auth: Supabase
 
