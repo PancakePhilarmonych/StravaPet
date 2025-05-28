@@ -1,5 +1,5 @@
 {
   "name": "stravapet",
   "private": true,
-  "workspaces": ["app/*"]
+  "workspaces": ["apps/*"]
 }
