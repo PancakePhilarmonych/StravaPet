@@ -17,7 +17,7 @@ const fetchActivities = async (token: string) => {
 }
 
 const handleLogin = async () => {
-  const redirectUri = encodeURIComponent('http://localhost:5174/') // ← Замени на твой URL
+  const redirectUri = encodeURIComponent('http://localhost:5017/')
   const res = await fetch(`http://localhost:3001/auth/strava/redirect?redirect_uri=${redirectUri}`)
   if (!res.ok) {
     const text = await res.text()
@@ -39,19 +39,20 @@ onMounted(() => {
   if (token) {
     loggedIn.value = true
     fetchActivities(token)
+  } else {
+    const params = new URLSearchParams(window.location.search)
+    const code = params.get('code')
+    if (code) {
+      window.history.replaceState({}, document.title, '/')
+      axios.post('http://localhost:3001/auth/strava', { code }).then((res) => {
+        const token = res.data.access_token
+        localStorage.setItem('access_token', token)
+        loggedIn.value = true
+        fetchActivities(token)
+      })
+    }
   }
 
-  const params = new URLSearchParams(window.location.search)
-  const code = params.get('code')
-  if (code) {
-    window.history.replaceState({}, document.title, '/')
-    axios.post('http://localhost:3001/auth/strava', { code }).then((res) => {
-      const token = res.data.access_token
-      localStorage.setItem('access_token', token)
-      loggedIn.value = true
-      fetchActivities(token)
-    })
-  }
 })
 </script>
 

@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import axios from 'axios';
+import supabase from '../supabase';
+import { StravaTokenResponse } from '../types';
 
 const router = Router();
 
@@ -7,12 +9,25 @@ router.post('/strava', async (req, res) => {
   const { code } = req.body;
 
   try {
-    const response = await axios.post('https://www.strava.com/oauth/token', {
+    const response = await axios.post<StravaTokenResponse>('https://www.strava.com/oauth/token', {
       client_id: process.env.STRAVA_CLIENT_ID,
       client_secret: process.env.STRAVA_CLIENT_SECRET,
       code,
       grant_type: 'authorization_code',
-    })
+    });
+
+    const { access_token, athlete } = response.data;
+
+    const { error: supabaseError } = await supabase.from('users').upsert({
+      id: athlete.id,
+      email: athlete.email,
+      avatar_url: athlete.profile,
+      created_at: new Date().toISOString(),
+    });
+
+    if (supabaseError) {
+      console.error('Ошибка при сохранении пользователя в Supabase:', supabaseError);
+    }
 
     res.json(response.data);
 
