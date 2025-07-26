@@ -1,0 +1,18 @@
+# Node
+node_modules/
+.env
+dist/
+build/
+logs/
+*.log
+
+# macOS
+.DS_Store
+
+
+# Expo
+*.expo/
+*.expo-shared/
+
+# Ignore all local environment files
+**/.env
