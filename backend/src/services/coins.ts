@@ -48,10 +48,12 @@ export async function addCoins() {
     const activities = await supabase.from('activities')
       .select('distance, duration')
       .eq('user_id', user.id)
-      .filter('date', 'gte', new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString());
+      .filter('date', 'gte', new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString());
     
-      const totalDistance = activities.data?.reduce((sum, activity) => sum + activity.distance, 0) || 0;
-      const totalDuration = activities.data?.reduce((sum, activity) => sum + activity.duration, 0) || 0;
+      // const totalDistance = activities.data?.reduce((sum, activity) => sum + activity.distance, 0) || 0;
+      // const totalDuration = activities.data?.reduce((sum, activity) => sum + activity.duration, 0) || 0;
+      const totalDistance = Math.random() * 100000; // Simulated distance for testing
+      const totalDuration = Math.random() * 3600; // Simulated duration for testing
 
     const currentCoins = await supabase.from('coins')
       .select('total, updated_at')
