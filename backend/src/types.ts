@@ -32,6 +32,7 @@ export interface User {
   access_token: string;
   refresh_token: string;
   token_expires_at: string;
+  session_token?: string;
 }
 
 export interface Coins {

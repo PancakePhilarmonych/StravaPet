@@ -1,4 +1,5 @@
-import supabase from "../supabase";
+import supabase from "./supabase/client";
+import { fetchActivitiesFromStrava } from "./strava";
 
 function calculateCoins(distanceInMeters: number, timeInSeconds: number): number {
   const distanceKm = distanceInMeters / 1000;
@@ -12,19 +13,6 @@ function calculateCoins(distanceInMeters: number, timeInSeconds: number): number
 
   const totalCoins = Math.round(coinsFromDistance + coinsFromTime);
   return totalCoins;
-}
-
-export function fetchActivitiesFromStrava(access_token: number) {
-  fetch(`https://www.strava.com/api/v3/athlete`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${access_token}`
-    }
-  })
-    .then(response => response.json())
-    .then(activities => {
-      console.log('[activities]');
-      });
 }
 
 export async function fetchUsers(): Promise<{

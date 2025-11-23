@@ -1,6 +1,6 @@
 import express from 'express';
-import axios from 'axios';
-import supabase from '../supabase';
+import supabase from '../services/supabase/client';
+import { getAthlete, getAthleteActivities } from '../services/strava';
 
 const router = express.Router();
 
@@ -12,24 +12,10 @@ router.get('/', async (req, res) => {
   }
 
   try {
-    const athleteResponse = await axios.get('https://www.strava.com/api/v3/athlete', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const athlete = athleteResponse.data;
-
-    const result = await axios.get('https://www.strava.com/api/v3/athlete/activities', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        after: Math.floor(Date.now() / 1000) - 90 * 24 * 60 * 60, // 7 days ago in seconds
-      }
-    });
-
-    const activities = result.data.filter((activity: any) => activity.sport_type === 'Run');
+    const athlete = await getAthlete(accessToken);
+    const after = Math.floor(Date.now() / 1000) - 90 * 24 * 60 * 60;
+    const allActivities = await getAthleteActivities(accessToken, after);
+    const activities = allActivities.filter((activity: any) => activity.sport_type === 'Run');
 
     for (const activity of activities) {
       const { error } = await supabase

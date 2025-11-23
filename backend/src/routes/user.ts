@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import axios from 'axios';
-import supabase from '../supabase';
+import supabase from '../services/supabase/client';
 
 const router = Router();
 
