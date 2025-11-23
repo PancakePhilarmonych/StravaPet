@@ -44,7 +44,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = true
+  const sessionToken = localStorage.getItem('session_token')
+  const userId = localStorage.getItem('user_id')
+  const isAuthenticated = !!(sessionToken && userId)
 
   if (!isAuthenticated && to.name !== RouteNames.AUTH) {
     next({ name: RouteNames.AUTH })

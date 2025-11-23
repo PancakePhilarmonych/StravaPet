@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import axios from 'axios';
-import supabase from '../supabase';
-import { StravaTokenResponse } from '../types';
+import { randomBytes } from 'crypto';
+import { findUserById, createUser, updateUserTokens } from '../services/supabase/supabase';
+import { exchangeStravaCode } from '../services/strava';
 
 const router = Router();
 
@@ -9,34 +9,40 @@ router.post('/strava', async (req, res) => {
   const { code } = req.body;
 
   try {
-    const response = await axios.post<StravaTokenResponse>('https://www.strava.com/oauth/token', {
-      client_id: process.env.STRAVA_CLIENT_ID,
-      client_secret: process.env.STRAVA_CLIENT_SECRET,
-      code,
-      grant_type: 'authorization_code',
-    });
+    const { access_token, refresh_token, expires_at, athlete } = await exchangeStravaCode(code);
+    
+    const sessionToken = randomBytes(32).toString('hex');
+    const tokenData = {
+      access_token,
+      refresh_token,
+      token_expires_at: new Date(expires_at * 1000).toISOString(),
+      session_token: sessionToken,
+    };
 
-    const { access_token, refresh_token, expires_at, athlete } = response.data;
+    const existingUser = await findUserById(athlete.id);
 
-    const { error: supabaseError } = await supabase.from('users').upsert({
-      id: athlete.id,
-      email: athlete.email,
-      avatar_url: athlete.profile,
-      firstName: athlete.firstname,
-      lastName: athlete.lastname,
-      created_at: new Date().toISOString(),
-      access_token: access_token,
-      refresh_token: refresh_token,
-      token_expires_at: new Date(expires_at * 1000).toISOString(), // expires_at в секундах, нужно перевести в миллисекунды
-    });
-
-    if (supabaseError) {
-      console.error('Ошибка при сохранении пользователя в Supabase:', supabaseError);
+    try {
+      if (existingUser) {
+        await updateUserTokens(athlete.id, tokenData);
+      } else {
+        await createUser({
+          id: athlete.id,
+          ...tokenData,
+        });
+      }
+    } catch (error) {
+      console.error('Ошибка при работе с пользователем:', error);
+      return res.status(500).json({ error: 'Failed to save user data' });
     }
 
-    res.json(response.data);
+    res.json({
+      session_token: sessionToken,
+      user_id: athlete.id,
+    });
 
   } catch (error) {
+    console.error('Error exchanging code with Strava:', error);
+    
     res.status(500).json({
       error: 'Failed to fetch activities from Strava',
     });
