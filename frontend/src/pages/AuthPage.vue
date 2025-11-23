@@ -1,8 +1,7 @@
 <template>
   <div v-if="isLoading">Загрузка...</div>
   <div v-else>
-    AUTH LAYOUT
-    ЛОГИНЬСФ
+    AUTH
     <button @click="auth">AUTH</button>
   </div>
 </template>

@@ -34,7 +34,6 @@ app.listen(PORT, () => {
 
 cron.schedule('*/10 * * * *', () => {
   const now = new Date().toLocaleString('en-US');
-  addCoins();
   console.log(`🕐 Минутное уведомление: ${now} - Сервер работает нормально!`);
 });
 

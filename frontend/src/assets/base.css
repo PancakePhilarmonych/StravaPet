@@ -59,9 +59,8 @@
 }
 
 body {
-  height: 100vh;
   color: var(--color-text);
-  background: #1a1a1a;
+  background: #303030;
   line-height: 1.6;
   font-family:
     Inter,
