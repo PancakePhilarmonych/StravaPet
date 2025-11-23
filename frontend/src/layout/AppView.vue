@@ -33,6 +33,8 @@ function logout() {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  max-width: 1024px;
+  margin: 0 auto;
   overflow: hidden;
 }
 
